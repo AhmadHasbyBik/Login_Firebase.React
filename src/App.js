@@ -1,48 +1,24 @@
-import './App.css';
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
-import { useState, useEffect } from 'react';
-import ListOfTodo from './components/ListOfTodo'
+
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
+import { useNavigate, Route, Routes } from 'react-router-dom';
+import Login from './pages/login';
+import Home from './pages/home';
+import Crossings from "./pages/crossings";
+import AddCrossings from "./pages/addCrossings";
 
 function App() {
-  const [auth, setAuth] = useState(
-    false || window.localStorage.getItem('auth') === 'true'
-  );
-  const [token, setToken] = useState('');
-
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged((userCred)=>{
-      if (userCred) {
-        setAuth(true);
-        window.localStorage.setItem('auth', 'true');
-        userCred.getIdToken().then((token)=>{
-          setToken(token);
-        });
-      }
-    });
-  }, []);
-
-  const loginWithGoogle = () => {
-    firebase
-      .auth()
-      .signInWithPopup(new firebase.auth.GoogleAuthProvider())
-      .then((userCred) => {
-        if (userCred) {
-          setAuth(true);
-          window.localStorage.setItem('auth', 'true');
-        }
-      });
-  };
-
+  const navigate = useNavigate();
   return (
-    <div className="App">
-      {auth ? (
-        <ListOfTodo token={token}/>
-      ) : (
-        <button onClick={loginWithGoogle}>Login with Google</button>
-      )}    
-    </div>
+    <div>
+        {/* <button onClick={() => navigate(-1)}>go back</button> */}
+        <Routes>
+          <Route exact path="/" element={<Login/>}/>
+          <Route exact path="/home" element={<Home/>}/>
+          <Route exact path="/crossings" element={<Crossings/>}/>
+          <Route exact path="/addcrossings" element={<AddCrossings/>}/>
+        </Routes>
+      </div>
   );
 }
 
